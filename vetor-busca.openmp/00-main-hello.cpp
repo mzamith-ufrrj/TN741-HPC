@@ -21,4 +21,3 @@ int main (int ac, char **av){
 }//#pragma omp parallel
     return EXIT_SUCCESS;
 }
-z
