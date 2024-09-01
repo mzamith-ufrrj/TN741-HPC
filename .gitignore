@@ -1,0 +1,4 @@
+*.o
+*.exec
+*.bin
+*.csv
