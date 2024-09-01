@@ -4,33 +4,37 @@ DEFS        = -DALING=64
 INCLUDES    = -I.
 LIBDIR      =  #-L/opt/gnu-gcc/lib64
 LIBS        = -lm
+MKDIR_P     = mkdir -p
+OUT_DIR     = obj
 
 LINK        = $(LIBDIR) $(LIBS)  -static #-static-libstdc++ -static-libgcc
 COMPILECPU  = $(CPUCC) $(DEFS) $(INCLUDES) $(CPPFLAGS)
 
-all: multi-mat-cpu generate-mat show-mat
+all: directories multi-mat-cpu generate-mat show-mat
 
 show-mat: rural-mat main-show
-	$(COMPILECPU) obj/rural-mat.o obj/main-show.o $(LINK)  -o show-mat.exec
+	$(COMPILECPU) ${OUT_DIR}/rural-mat.o ${OUT_DIR}/main-show.o $(LINK)  -o show-mat.exec
 
 generate-mat:  rural-mat main-gener
-	$(COMPILECPU) obj/rural-mat.o obj/main-gener.o $(LINK)  -o generate-mat.exec
+	$(COMPILECPU) ${OUT_DIR}/rural-mat.o ${OUT_DIR}/main-gener.o $(LINK)  -o generate-mat.exec
 
 multi-mat-cpu:  rural-mat main-multi
-	$(COMPILECPU) obj/rural-mat.o obj/main-multi.o $(LINK) -o multi-mat-cpu.exec
+	$(COMPILECPU) ${OUT_DIR}/rural-mat.o ${OUT_DIR}/main-multi.o $(LINK) -o multi-mat-cpu.exec
 
 main-show:
-	$(COMPILECPU) -c main-show.cpp -o obj/main-show.o
+	$(COMPILECPU) -c main-show.cpp -o ${OUT_DIR}/main-show.o
 
 main-gener:
-	$(COMPILECPU) -c main-gener.cpp -o obj/main-gener.o
+	$(COMPILECPU) -c main-gener.cpp -o ${OUT_DIR}/main-gener.o
 
 main-multi:
-	$(COMPILECPU) -c main-multi.cpp -o obj/main-multi.o
+	$(COMPILECPU) -c main-multi.cpp -o ${OUT_DIR}/main-multi.o
 
 rural-mat:
-	$(COMPILECPU) -c rural-mat.cpp -o obj/rural-mat.o
+	$(COMPILECPU) -c rural-mat.cpp -o ${OUT_DIR}/rural-mat.o
 
+directories:
+	${MKDIR_P} ${OUT_DIR}
 
 clean:
-	rm obj/*.o; rm *.exec
+	rm ${OUT_DIR}/*.o; rm *.exec

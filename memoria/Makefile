@@ -7,14 +7,17 @@ LIBS        = -lm
 PAPI      = /opt/papi
 LINK        = $(LIBDIR) $(LIBS) -static
 COMPILE++   = $(CPUC++) $(DEFS) $(INCLUDES) $(CPPFLAGS)
+MKDIR_P   = mkdir -p
+OUT_DIR   = obj
 
 
-all:   memory
-
+all:  directories memory
 
 memory:
-	$(COMPILE++) -c memory.cpp -o obj/memory.o
-	$(COMPILE++)  obj/memory.o    $(LINK) -o memory.exec  $(PAPI)/lib/libpapi.a
+	$(COMPILE++) -c memory.cpp -o ${OUT_DIR}/memory.o
+	$(COMPILE++)  ${OUT_DIR}/memory.o    $(LINK) -o memory.exec  $(PAPI)/lib/libpapi.a
 
+directories:
+	${MKDIR_P} ${OUT_DIR}
 clean:
-	rm obj/*.o; rm *.exec
+	rm ${OUT_DIR}/*.o; rm *.exec
