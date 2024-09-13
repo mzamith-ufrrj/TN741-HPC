@@ -8,7 +8,7 @@ LIBS        = -lm #-lgomp
 LINK        = $(LIBDIR) $(LIBS)
 COMPILECPU  = $(CPUCC) $(DEFS) $(INCLUDES) $(CPPFLAGS)
 
-all: 00-main-parallel-for 01-main-parallel-section
+all: 00-main-parallel-for 01-main-parallel-section 02-main-parallel-reduction
 
 00-main-parallel-for:
 	$(COMPILECPU) 00-main-parallel-for.cpp $(LINK)  -o parallel-for-omp.exec
