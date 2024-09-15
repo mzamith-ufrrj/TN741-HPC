@@ -2,3 +2,4 @@
 *.exec
 *.bin
 *.csv
+.Rproj.user
