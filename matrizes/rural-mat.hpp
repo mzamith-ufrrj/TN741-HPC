@@ -8,6 +8,7 @@ struct stMatrix{
 void print2Console(stMatrix *);
 void print2Binary(stMatrix *, std::string);
 void loadBinary(stMatrix *, std::string);
+void matrix_trans(stMatrix *, stMatrix *, unsigned int, double** = NULL);
 void matrix_multi(stMatrix*, stMatrix*, stMatrix*);
 void create_mat_identity(stMatrix *);
 void create_mat_dense(stMatrix *);

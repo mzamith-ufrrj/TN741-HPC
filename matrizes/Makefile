@@ -1,5 +1,5 @@
 CPUCC       = g++
-CPPFLAGS    = #-O3 #-fopenmp
+CPPFLAGS    = -O0 -fopenmp #-O3 #-fopenmp
 DEFS        = -DALING=64
 INCLUDES    = -I.
 LIBDIR      =  #-L/opt/gnu-gcc/lib64
@@ -10,7 +10,10 @@ OUT_DIR     = obj
 LINK        = $(LIBDIR) $(LIBS)  #-static #-static-libstdc++ -static-libgcc
 COMPILECPU  = $(CPUCC) $(DEFS) $(INCLUDES) $(CPPFLAGS)
 
-all: directories multi-mat-cpu generate-mat show-mat
+all: directories multi-mat-cpu generate-mat show-mat trans-mat
+
+trans-mat: rural-mat main-trans
+	$(COMPILECPU) ${OUT_DIR}/rural-mat.o ${OUT_DIR}/main-trans.o $(LINK)  -o trans-mat.exec
 
 show-mat: rural-mat main-show
 	$(COMPILECPU) ${OUT_DIR}/rural-mat.o ${OUT_DIR}/main-show.o $(LINK)  -o show-mat.exec
@@ -20,6 +23,9 @@ generate-mat:  rural-mat main-gener
 
 multi-mat-cpu:  rural-mat main-multi
 	$(COMPILECPU) ${OUT_DIR}/rural-mat.o ${OUT_DIR}/main-multi.o $(LINK) -o multi-mat-cpu.exec
+
+main-trans:
+	$(COMPILECPU) -c main-trans.cpp -o ${OUT_DIR}/main-trans.o
 
 main-show:
 	$(COMPILECPU) -c main-show.cpp -o ${OUT_DIR}/main-show.o

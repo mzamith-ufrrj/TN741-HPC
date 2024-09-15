@@ -59,6 +59,17 @@ void saveLog(string logFile,
 
 }
 
+void help (void){
+    cout << "Programa para multiplicar 2 matrizes" << endl;
+    cout << "Exemplo: " << endl;
+
+    cout << "\t./multi-mat-cpu.exec r3x5.bin r5x3.bin C.bin log.csv 1 0" << endl;
+    cout << "\t                        |       |        |      |    | |-----> 0/1 exibe ou não a matriz " << endl;
+    cout << "\t                        |       |        |      |    |-------> qtde de threads alocadas" << endl;
+    cout << "\t                        |       |        |      |------------> arquivo com o log do tempo de execução" << endl;
+    cout << "\t                        |-------|--------|-------------------> arquivo binário com as matrizes A, B e C" << endl;
+    cout << "\t                        |-------|--------|-------------------> C = A x B" << endl;
+}
 
 int main (int ac, char **av){
     unsigned long mem = 0;
@@ -66,6 +77,10 @@ int main (int ac, char **av){
                   B,
                   C;
 
+    if (ac != 7){
+        help();
+        return EXIT_SUCCESS;
+    }
     string filename_matrix_A = av[1],
            filename_matrix_B = av[2],
            filename_matrix_C = av[3],
@@ -85,8 +100,8 @@ int main (int ac, char **av){
     loadBinary(&A, filename_matrix_A);
     loadBinary(&B, filename_matrix_B);
 
-    C.m = B.n;
-    C.n = A.m;
+    C.m = A.n;
+    C.n = B.m;
 
     assert(posix_memalign(reinterpret_cast <void**>(&C.MAT), ALING, C.m *  C.n * sizeof(double)) == 0);
 

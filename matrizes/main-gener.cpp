@@ -12,6 +12,15 @@
 
 
 using namespace std;
+void help (void){
+    cout << "Programa para gerar matrizes aleatórias e identidade" << endl;
+    cout << "Exemplo: " << endl;
+
+    cout << "\t./generate-mat-cpu.exec 10 10 1 r10x10.bin" << endl;
+    cout << "\t                         |  | |  |-----> Arquivo binário com a matriz " << endl;
+    cout << "\t                         |  | |--------> 1 indica matriz randomica e 0 identidade " << endl;
+    cout << "\t                         |--|----------> respectivamente colunas e linhas da matriz"  << endl;
+}
 
 /*
  *  ./generate-mat-cpu.exec 10 10 1 r10x10.bin -> random
@@ -21,6 +30,10 @@ using namespace std;
 int main (int ac, char **av){
 
     stMatrix A;
+    if (ac != 5){
+        help();
+        return EXIT_SUCCESS;
+    }
 
     string filename = av[4], smatType;
     A.m = stoi(av[1]);

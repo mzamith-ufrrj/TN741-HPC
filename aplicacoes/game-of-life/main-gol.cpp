@@ -7,8 +7,6 @@
 #include <string>
 #include <cstring>
 #include <random>
-#include <App.h>
-#include <ca-types.hpp>
 #include <gol-cpu.hpp>
 #include <cstdio>
 #include <chrono>
@@ -44,31 +42,25 @@ void saveLog(string logFile,
     cout << "Log file[" << logFile << "] saved" << endl;
 
 }
-/*
- * ./GOL-Benchmarking.exec 1024 8192 100 test.csv [cpu_s/cpu_m] 1
- *                           |    |   |     |        |   |----> [0 or 1] defines output binary file to compare
- *                           |    |   |     |        |--------> cpu_s or cpu_m use cpu single or multicore.
- *                           |    |   |     |-----------------> log file used to statistic
- *                           |    |   |-----------------------> timesteps
- *                           |----|---------------------------> width and height of Cellular Automata mesh
- */
-int main (int ac, char **av){
 
+int main (int ac, char **av){
+    double *elapsedtime = NULL;
     stLattice mLattice;
-    bool  flagSave = stoi(av[5]);
+    //bool  flagSave = stoi(av[5]);
     //Inicializa variável
     mLattice.x   = stoi(av[1]);
     mLattice.y   = stoi(av[2]);
     mLattice.t   = stoi(av[3]);
-    string filename = av[4];
-    string type     = av[5];
-    unsigned long  processorElapsedTime = 0;
-    auto start = std::chrono::high_resolution_clock::now();
+    unsigned int nThreads = stoi(av[4]);
+    //string filename = av[4];
+    //string type     = av[5];
+
+    auto start_time = std::chrono::high_resolution_clock::now();
 
 
     cout << endl << "GAME OF LIFE" << endl;
     cout << "\tDomain( x = " << mLattice.x << ",y = " <<  mLattice.y << ",t = " <<  mLattice.t << ")" << endl;
-    cout << "Log file: " << filename  << endl;
+    cout << "\tThreads " << nThreads << endl;
 
     unsigned long mem =  mLattice.x *  mLattice.y * sizeof(unsigned char);
     //Allocing align
@@ -76,31 +68,27 @@ int main (int ac, char **av){
     posix_memalign(reinterpret_cast <void**>(&mLattice.buff1), ALING, mem);
 
     InitRandness(&mLattice, 0.25);
-    //print2Console(&mLattice);
 
-
-
-    processorElapsedTime = CPU_GOL(&mLattice, type);
-
-
-    //print2Console(&mLattice);
-
-    if (flagSave){
-        string logBinFile = filename + ".bin";
-        cout << "Saving binary output to compare [" << logBinFile << "]" << endl;
-        fstream output;
-        output.open(logBinFile, fstream::out | fstream::binary);
-        output.write(reinterpret_cast <const char*>(mLattice.buff0), mem);
-        output.close();
+    CPU_GOL(&mLattice, &elapsedtime, nThreads);
+    //CPU_GOL(&mLattice, type);
+    for (unsigned int i = 0; i < nThreads; i++){
+        cout << "\tTempo gasto pela thread " << i << " foi de " << elapsedtime[i] << " em segundos" << endl;
     }
+
+    print2Console(&mLattice);
+
+
 
     free(mLattice.buff0);
     free(mLattice.buff1);
-    auto stop = std::chrono::high_resolution_clock::now();
+    free(elapsedtime);
+    auto stop_time = std::chrono::high_resolution_clock::now();
 
     //chrono::hours, chrono::minutes, chrono::seconds, chrono::milliseconds, or chrono::microseconds.
-    auto elapsed = chrono::duration_cast<chrono::microseconds>(stop - start);
+    std::chrono::duration<double> total_time = stop_time - start_time;
+
+    cout << "Tempo de execução: " << total_time.count() << " em segundos " << endl;
     //cout << elapsed.count() << endl;
-    saveLog(filename, mLattice.x, mLattice.y, mLattice.t, elapsed.count(), processorElapsedTime);
+    //saveLog(filename, mLattice.x, mLattice.y, mLattice.t, elapsed.count(), processorElapsedTime);
     return EXIT_SUCCESS;
 }

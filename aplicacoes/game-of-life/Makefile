@@ -1,5 +1,5 @@
 CPUC++      = g++ #/opt/gnu-gcc/bin/g++
-CPPFLAGS    = -O3 -fopenmp #-O3 #-fopenmp
+CPPFLAGS    = -O0 -fopenmp #-O3 #-fopenmp
 DEFS        = -DALING=64
 INCLUDES    = -I.
 LIBDIR      =      #-L/opt/gnu-gcc/lib64
@@ -7,7 +7,6 @@ LIBS        = -lm
 MKDIR_P     = mkdir -p
 OUT_DIR     = obj
 LINK        = $(LIBDIR) $(LIBS)
-COMPILE     = $(CPUCC) $(DEFS) $(INCLUDES) $(CPPFLAGS)
 COMPILE++   = $(CPUC++) $(DEFS) $(INCLUDES) $(CPPFLAGS)
 
 all:  directories gol-cpu main-gol

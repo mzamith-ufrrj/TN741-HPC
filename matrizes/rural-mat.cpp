@@ -56,6 +56,34 @@ void loadBinary(stMatrix *A, std::string filename){
     //print2Console(A);
 }
 
+void matrix_trans(stMatrix *B, stMatrix *A, unsigned int threads, double **ptr){
+    double et = 0.0f;
+    double *elapsedtime = NULL;
+
+    assert(posix_memalign(reinterpret_cast <void**>(&elapsedtime), ALING, threads * sizeof(double)) == 0);
+
+    omp_set_num_threads(threads);
+    #pragma omp parallel private(et) shared(A, B, elapsedtime)
+    {
+         et  = omp_get_wtime();
+        //dinamic, static guided, chunck <- passos do for opcional
+        #pragma omp for nowait schedule (dynamic)
+        for (int j = 0; j < A->n; j++){
+            for (int i = 0; i < A->m; i++){
+
+                int p = j * A->m + i;
+                int q = i * B->m + j;
+                B->MAT[q] = A->MAT[p];
+            }//end-for (int j = 0; j < mLattice->height; j++){
+        }//end-void InitRandness(tpLattice *mLattice, float p){
+        elapsedtime[omp_get_thread_num()] = omp_get_wtime() - et;
+    }
+
+    if (ptr == NULL)
+        free(elapsedtime);
+    else
+        *ptr = elapsedtime;
+}
 
 void matrix_multi(stMatrix *C, stMatrix *A, stMatrix *B){
 
